@@ -1,4 +1,4 @@
-var day = {
+var daySymbol = {
     "clear sky": "B",
     "few clouds": "H",
     "scatterd clouds": "N",
@@ -9,9 +9,30 @@ var day = {
     "snow": "U",
     "heavy snow": "W",
     "mist": "M",
-    "heavy thunderstorm": "Z",
-    
+    "heavy thunderstorm": "Z"
 };
+
+var translate = {
+    // THUNDERSTORMS
+    "thunderstorm with light rain": "thunderstorm",
+    "thunderstorm with rain": "thunderstorm",
+    "thunderstorm with heavy rain": "thunderstorm",
+    "light thunderstorm": "thunderstorm",
+    "thunderstorm": "thunderstorm",
+    "heavy thunderstorm": "thunderstorm",
+    "ragged thunderstorm": "thunderstorm",
+    "thunderstorm with light drizzle": "thunderstorm",
+    "thunderstorm with drizzle": "thunderstorm",
+    "thunderstorm with heavy drizzle": "thunderstorm",
+    // DRIZZLE
+    // RAIN
+    // SNOW
+    // CLOUDS
+    "few clouds": "few clouds",
+    "scattered clouds": "scattered clouds",
+    "broken clouds": "broken clouds",
+    "overcast clouds": "broken clouds"
+}
 
 var apiKey = "199bc837ab6787c238c84c4168582e41";
 
@@ -31,8 +52,10 @@ navigator.geolocation.getCurrentPosition(function(location) {
     
     $.getJSON(address, function(data) {
         console.log(data);
-        var todaysWeather = data.weather[0].description;
-        var icon = day[todaysWeather];
+        var description = data.weather[0].description;
+        var main = translate[description];
+        var icon = daySymbol[main];
+//        var icon = data.weather[0].icon;
         var tempK = data.main.temp;
         var tempF = Math.round(tempK * (9.0/5.0) - 459.67);
         var tempC = Math.round(tempK - 273.15);
@@ -42,8 +65,11 @@ navigator.geolocation.getCurrentPosition(function(location) {
         var windDeg = data.wind.deg;
         
 //        weatherPanel.text(todaysWeather);
-        
+        weatherPanel.append("<h3>" + data.name + "</h3>");
         weatherPanel.append("<p><a href='' class='icon' data-icon=" + icon + "></a></p>");
+        weatherPanel.append("<p class='text-capitalize lead'>" + description + "</p>");
+        console.log(icon);
+//        weatherPanel.append("<i class='owf owf-" + icon + "'></i>");
         weatherPanel.append("<p>" + tempF + " " + tempC + "</p>");
         weatherPanel.append("<p>Humidity: " + humidity + "%</p>");
         weatherPanel.append("<p>Pressure: " + pressure + "</p>");
