@@ -100,8 +100,8 @@ var $windSpeed = $("#windSpeed");
 var $windDirection = $("#windDirection");
 
 
-
 var apiKey = "199bc837ab6787c238c84c4168582e41";
+
 
 navigator.geolocation.getCurrentPosition(function(location) {
     var lat = location.coords.latitude;
@@ -144,7 +144,13 @@ navigator.geolocation.getCurrentPosition(function(location) {
         $windSpeed.text(windSpeed);
         $windDirection.text(windDirection);
         
-        
+        $('#tempToggle').change(function(){
+             if(this.checked) {
+                 $temp.text(tempF);
+             } else {
+                 $temp.text(tempC);
+            }
+        });
         
         
     });

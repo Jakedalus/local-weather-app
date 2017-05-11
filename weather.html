@@ -11,13 +11,13 @@
         
         
         <!-- EXTERNAL STYLESHEETS       -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
         
-<!--
-        <link href="https://cdn.rawgit.com/websygen/owfont/master/css/owfont-regular.css" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/websygen/owfont/tree/master/fonts">
--->
+        
 
         
         <!-- HOMEMADE CSS       -->
@@ -34,7 +34,10 @@
                     <h3 id="city"></h3>
                     <p id="symbol"></p>
                     <p id="descirption"></p>
-                    <p id="temp"></p>
+                    <div id="tempPanel">
+                        <p id="temp"></p>
+                        <input id="tempToggle" type="checkbox" checked data-toggle="toggle" data-on="ºF" data-off="ºC" data-onstyle="success" data-offstyle="info">
+                    </div>
                     <p id="humidity"></p>
                     <p id="pressure"></p>
                     <p id="windSpeed"></p>
@@ -48,7 +51,6 @@
             
 
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="weather.js"></script>
     </body>
 </html>
