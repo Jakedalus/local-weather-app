@@ -1,15 +1,82 @@
 // TODO:
-        // [] SWITCH BETWEEN ºF and ºC
+        // [x] SWITCH BETWEEN ºF and ºC
         // [] CHANGE BACKGROUND COLOR DEPENDING ON WEATHER
         // [] CHANGE ICONS DEPENDING ON DAY OR NIGHT
         // [] CHANGE BACKBROUND COLOR DEPENDING ON TIME
         //
 
+// COLOR DATA
+var timeColor = {
+    "dawn": "#FFECC2",
+    "morning": "#8A9493",
+    "day": "#004890",
+    "magic hour": "#D09F68",
+    "sunset": "#951401",
+    "dusk": "#4656CE",
+    "night": "#040C1F",
+};
+
+function dayPartition(time, sunrise, sunset) {
+    if(time >= sunrise - 1 && time < sunrise + 2) {
+        return "dawn";
+    } else if (time >= sunrise + 2 && time < 11) {
+        return "morning";
+    } else if (time >= 11 && time < sunset - 3) {
+        return "day";
+    } else if (time >= sunset -3 && time < sunset) {
+        return "magic hour";
+    } else if (time >= sunset && time < sunset + 2) {
+        return "sunset";
+    } else if (time >= sunset + 2 && sunset + 3) {
+        return "dusk";
+    } else {
+        return "night";
+    } 
+}
+
+function timeWeatherGradient(time, weather, wp) {
+    var tc = timeColor[time];
+    var wc = weatherColor[weather];
+    console.log(tc);
+    console.log(wc);
+    
+    var tp = 100-wp;
+    console.log("Clouds:", wp);
+    
+    var fade = " , " + wc + " " + tp + "%";
+
+//    $("body").css("color", );
+    
+    $("body").css("background-color", tc);
+//    $("body").css("background-image", "-webkit-gradient(linear, left top, left bottom, from(" + tc + "), to(" + wc + "))");
+    $("body").css("background-image", "-webkit-linear-gradient(bottom, " + tc + fade + " , " + wc + ")");
+    $("body").css("background-image", "-moz-linear-gradient(bottom, " + tc + fade + " , " + wc + ")");
+    $("body").css("background-image", "-o-linear-gradient(bottom, " + tc + fade + " , " + wc + ")");
+    $("body").css("background-image", "linear-gradient(to top, " + tc + fade + " , " + wc + ")");
+    
+    console.log($("body"));
+
+    //    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f85032', endColorstr='#e73827', GradientType=1 );
+}
+
+var weatherColor = {
+    "few clouds": "#F8F5EB",
+    "scattered clouds": "#F8F5EB",
+    "broken clouds": "#676268",
+    "shower rain": "#F8F5EB",
+    "rain": "#6B605C",
+    "thunderstorm": "#433F60",
+    "snow": "#DEDEE0",
+    "heavy snow": "#B5C5EC",
+    "mist": "#C2C4C8",
+    "heavy thunderstorm": "#282542"
+}
+
 // METEOCONS DATA
 var daySymbol = {
     "clear sky": "B",
     "few clouds": "H",
-    "scatterd clouds": "N",
+    "scattered clouds": "N",
     "broken clouds": "Y",
     "shower rain": "Q",
     "rain": "R",
@@ -103,6 +170,7 @@ var $windDirection = $("#windDirection");
 var apiKey = "199bc837ab6787c238c84c4168582e41";
 
 
+
 navigator.geolocation.getCurrentPosition(function(location) {
     var lat = location.coords.latitude;
     var lon = location.coords.longitude;
@@ -110,6 +178,8 @@ navigator.geolocation.getCurrentPosition(function(location) {
     console.log(lat);
     console.log(lon);
     console.log(acc);
+    
+    
     
     var address = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=" + apiKey;
     console.log(address);
@@ -120,18 +190,34 @@ navigator.geolocation.getCurrentPosition(function(location) {
         var city = data.name;
         var description = data.weather[0].description;
         var main = translate[description];
+        console.log(main);
         var icon = "<a href='' class='icon' data-icon=" + daySymbol[main]  + "></a>";
+        console.log(icon);
         var tempK = data.main.temp;
         var tempF = Math.round(tempK * (9.0/5.0) - 459.67) + "ºF ";
         var tempC = Math.round(tempK - 273.15)  + "ºC ";
         var tempF_span = tempF + "ºF ";
         var tempC_span = tempC + "ºC ";
+        var cloudCover = data.clouds.all;
         var humidity = "Humidity: " + data.main.humidity  + "%";
         var pressure = "Pressure: " + data.main.pressure;
         var windSpeed = "Wind Speed: " + data.wind.speed;
         var windDirection = "Wind Direction: " + data.wind.deg;
-        var sunrise = data.sys.sunrise;
-        var sunset = data.sys.sunset;
+        var sunrise = data.sys.sunrise * 1000;
+        var sunriseFormat = new Date(sunrise);
+        var sunset = data.sys.sunset * 1000;
+        var sunsetFormat = new Date(sunset);
+        console.log(sunriseFormat);
+        console.log(sunsetFormat);
+        
+        var d = new Date();
+        console.log(d);
+        var time = d.getHours();
+        console.log(time);
+        
+        var whatTimeIsIt = dayPartition(time, sunriseFormat.getHours(), sunsetFormat.getHours());
+        
+        timeWeatherGradient(whatTimeIsIt, main, cloudCover);
         
 
         // MAIN WEATHER PANEL
