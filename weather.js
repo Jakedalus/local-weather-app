@@ -1,8 +1,11 @@
 // TODO:
         // [x] SWITCH BETWEEN ºF and ºC
-        // [] CHANGE BACKGROUND COLOR DEPENDING ON WEATHER
+        // [x] CHANGE BACKGROUND COLOR DEPENDING ON WEATHER
         // [] CHANGE ICONS DEPENDING ON DAY OR NIGHT
-        // [] CHANGE BACKBROUND COLOR DEPENDING ON TIME
+        // [x] CHANGE BACKBROUND COLOR DEPENDING ON TIME
+        // [] MAKE PAGE REFRESH EVERY 10 MIN 
+        // [x] ADD STAND IN TABLE TO LOADS MORE SMOOTHLY
+        // [] ADD SEARCH SO CAN GET CURRENT WEATHER IN OTHER LOCATIONS
         //
 
 // COLOR DATA
@@ -196,13 +199,11 @@ navigator.geolocation.getCurrentPosition(function(location) {
         var tempK = data.main.temp;
         var tempF = Math.round(tempK * (9.0/5.0) - 459.67) + "ºF ";
         var tempC = Math.round(tempK - 273.15)  + "ºC ";
-        var tempF_span = tempF + "ºF ";
-        var tempC_span = tempC + "ºC ";
         var cloudCover = data.clouds.all;
-        var humidity = "Humidity: " + data.main.humidity  + "%";
-        var pressure = "Pressure: " + data.main.pressure;
-        var windSpeed = "Wind Speed: " + data.wind.speed;
-        var windDirection = "Wind Direction: " + data.wind.deg;
+        var humidity = data.main.humidity;
+        var pressure = data.main.pressure;
+        var windSpeed = data.wind.speed;
+        var windDirection = data.wind.deg;
         var sunrise = data.sys.sunrise * 1000;
         var sunriseFormat = new Date(sunrise);
         var sunset = data.sys.sunset * 1000;
