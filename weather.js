@@ -190,9 +190,7 @@ navigator.geolocation.getCurrentPosition(function(location) {
     
     var address = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=" + apiKey;
     console.log(address);
-    var JSONP_script_tag = "<script src='" + address + "&callback=showWeather'></script>";
-    console.log(JSONP_script_tag);
-    $("body").append(JSONP_script_tag);
+    
 //    window.location = address;
 
     $.ajax({
