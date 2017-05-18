@@ -8,6 +8,10 @@
         // [] ADD SEARCH SO CAN GET CURRENT WEATHER IN OTHER LOCATIONS
         //
 
+
+var apiKey = "199bc837ab6787c238c84c4168582e41";
+//var wundergroundKey = "74f55ad8f8ecebb4";
+
 // COLOR DATA
 var timeColor = {
     "dawn": "#FFECC2",
@@ -105,6 +109,8 @@ var nightSymbol = {
 };
 
 var translate = {
+    // CLEAR SKY
+    "clear sky": "clear sky",
     // THUNDERSTORMS
     "thunderstorm with light rain": "thunderstorm",
     "thunderstorm with rain": "thunderstorm",
@@ -170,8 +176,6 @@ var $windSpeed = $("#windSpeed");
 var $windDirection = $("#windDirection");
 
 
-var apiKey = "199bc837ab6787c238c84c4168582e41";
-
 
 
 navigator.geolocation.getCurrentPosition(function(location) {
@@ -186,63 +190,80 @@ navigator.geolocation.getCurrentPosition(function(location) {
     
     var address = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=" + apiKey;
     console.log(address);
+    var JSONP_script_tag = "<script src='" + address + "&callback=showWeather'></script>";
+    console.log(JSONP_script_tag);
+    $("body").append(JSONP_script_tag);
 //    window.location = address;
-    
-    $.getJSON(address, function(data) {
-        console.log(data);
-        var city = data.name;
-        var description = data.weather[0].description;
-        var main = translate[description];
-        console.log(main);
-        var icon = "<a href='' class='icon' data-icon=" + daySymbol[main]  + "></a>";
-        console.log(icon);
-        var tempK = data.main.temp;
-        var tempF = Math.round(tempK * (9.0/5.0) - 459.67) + "ºF ";
-        var tempC = Math.round(tempK - 273.15)  + "ºC ";
-        var cloudCover = data.clouds.all;
-        var humidity = data.main.humidity;
-        var pressure = data.main.pressure;
-        var windSpeed = data.wind.speed;
-        var windDirection = data.wind.deg;
-        var sunrise = data.sys.sunrise * 1000;
-        var sunriseFormat = new Date(sunrise);
-        var sunset = data.sys.sunset * 1000;
-        var sunsetFormat = new Date(sunset);
-        console.log(sunriseFormat);
-        console.log(sunsetFormat);
-        
-        var d = new Date();
-        console.log(d);
-        var time = d.getHours();
-        console.log(time);
-        
-        var whatTimeIsIt = dayPartition(time, sunriseFormat.getHours(), sunsetFormat.getHours());
-        
-        timeWeatherGradient(whatTimeIsIt, main, cloudCover);
-        
 
-        // MAIN WEATHER PANEL
-        $city.text(city);
-        $symbol.html(icon);
-        $descirption.text(description).css("text-transform", "capitalize").addClass("lead");
-        $temp.text(tempF);
-        $humidity.text(humidity);
-        $pressure.text(pressure);
-        $windSpeed.text(windSpeed);
-        $windDirection.text(windDirection);
+    $.ajax({
+        url: address, 
+        dataType: "json",
+        complete: function(d) {
+            var response = jQuery.parseJSON(JSON.stringify(d));
+            var data = response.responseJSON;
+            console.log(data);
+            var city = data.name;
+            var description = data.weather[0].description;
+            var main = translate[description];
+            console.log(main);
+            var icon = "<a href='' class='icon' data-icon=" + daySymbol[main]  + "></a>";
+            console.log(icon);
+            var tempK = data.main.temp;
+            var tempF = Math.round(tempK * (9.0/5.0) - 459.67) + "ºF ";
+            var tempC = Math.round(tempK - 273.15)  + "ºC ";
+            var cloudCover = data.clouds.all;
+            var humidity = data.main.humidity;
+            var pressure = data.main.pressure;
+            var windSpeed = data.wind.speed;
+            var windDirection = data.wind.deg;
+            var sunrise = data.sys.sunrise * 1000;
+            var sunriseFormat = new Date(sunrise);
+            var sunset = data.sys.sunset * 1000;
+            var sunsetFormat = new Date(sunset);
+            console.log(sunriseFormat);
+            console.log(sunsetFormat);
+
+            var d = new Date();
+            console.log(d);
+            var time = d.getHours();
+            console.log(time);
+
+            var whatTimeIsIt = dayPartition(time, sunriseFormat.getHours(), sunsetFormat.getHours());
+
+            timeWeatherGradient(whatTimeIsIt, main, cloudCover);
+
+
+            // MAIN WEATHER PANEL
+            $city.text(city);
+            $symbol.html(icon);
+            $descirption.text(description).css("text-transform", "capitalize").addClass("lead");
+            $temp.text(tempF);
+            $humidity.text(humidity);
+            $pressure.text(pressure);
+            $windSpeed.text(windSpeed);
+            $windDirection.text(windDirection);
+
+            $('#tempToggle').change(function(){
+                 if(this.checked) {
+                     $temp.text(tempF);
+                 } else {
+                     $temp.text(tempC);
+                }
+            });
+            
         
-        $('#tempToggle').change(function(){
-             if(this.checked) {
-                 $temp.text(tempF);
-             } else {
-                 $temp.text(tempC);
-            }
-        });
-        
-        
+        },
+        error: function(err, status, textThrown) {
+            console.log("Error:");
+            console.log(err);
+            console.log("Status:", status);
+            console.log("Thrown:", textThrown);
+        },
+        cache: false   
     });
-    
+
     
 });
+
 
 
