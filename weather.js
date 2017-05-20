@@ -63,13 +63,18 @@ function dayPartition(time, sunrise, sunset) {
 
 function timeWeatherGradient(time, weather, wp) {
     var tc = timeColor[time];
-    var wc = weatherColor[weather];
+    if(weather == "clear sky") {
+        var wc = tc;
+    } else {
+        var wc = weatherColor[weather];
+    }
+    
     var rgb = wc.match(/\d+/g);
     var rgb_c = [];
     var rgb_s = [];
     for(var i = 0; i < rgb.length; i++) {
-        var c = Math.abs(rgb[i] - 160);
-        var c2 = Math.abs(rgb[i] - 80);
+        var c = Math.abs(rgb[i] - 200);
+        var c2 = Math.abs(rgb[i] - 100);
         rgb_c.push(c);
         rgb_s.push(c2);
     }
@@ -338,6 +343,7 @@ navigator.geolocation.getCurrentPosition(function(location) {
             var city = data.current_observation.display_location.full;
             console.log(city);
             var description = data.current_observation.weather;
+//            description = "Clear";
             var main = translate[description];
             console.log(main);
             var icon = "<a href='' class='icon' data-icon=" + daySymbol[main]  + "></a>";
@@ -361,15 +367,8 @@ navigator.geolocation.getCurrentPosition(function(location) {
             sunset.setMinutes(sunsetMin);
             console.log(sunrise);
             console.log(sunset);
-
-            var d = new Date();
-            console.log(d);
-            var time = d.getHours();
-            console.log(time);
-            var whatTimeIsIt = dayPartition(time, sunrise.getHours(), sunset.getHours());
-            var clouds = cloudCover(description);
-
-
+            
+            
             // MAIN WEATHER PANEL
             $city.text(city);
             $symbol.html(icon);
@@ -378,6 +377,15 @@ navigator.geolocation.getCurrentPosition(function(location) {
             $humidity.text(humidity);
             $pressure.text(pressure);
             $windSpeed.text(wind);
+            
+            var d = new Date();
+            console.log(d);
+            var time = d.getHours();
+            console.log(time);
+            var whatTimeIsIt = dayPartition(time, sunrise.getHours(), sunset.getHours());
+//            whatTimeIsIt = "day";
+            console.log(whatTimeIsIt);
+            var clouds = cloudCover(description);
             
             timeWeatherGradient(whatTimeIsIt, main, clouds);
 
