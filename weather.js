@@ -9,8 +9,8 @@
         //
 
 
-var apiKey = "199bc837ab6787c238c84c4168582e41";
-//var wundergroundKey = "74f55ad8f8ecebb4";
+//var apiKey = "199bc837ab6787c238c84c4168582e41";
+var wundergroundKey = "74f55ad8f8ecebb4";
 
 // COLOR DATA
 var timeColor = {
@@ -188,7 +188,8 @@ navigator.geolocation.getCurrentPosition(function(location) {
     
     
     
-    var address = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=" + apiKey;
+    var address = "https://api.wunderground.com/api/" + wundergroundKey + "/conditions/forecast/astronomy/q/" + lat + "," + lon + ".json";
+
     console.log(address);
     
 //    window.location = address;
@@ -200,35 +201,35 @@ navigator.geolocation.getCurrentPosition(function(location) {
             var response = jQuery.parseJSON(JSON.stringify(d));
             var data = response.responseJSON;
             console.log(data);
-            var city = data.name;
-            var description = data.weather[0].description;
+            var city = data.current_observation.display_location.full;
+            console.log(city);
+            var description = data.current_observation.weather;
             var main = translate[description];
             console.log(main);
             var icon = "<a href='' class='icon' data-icon=" + daySymbol[main]  + "></a>";
             console.log(icon);
-            var tempK = data.main.temp;
-            var tempF = Math.round(tempK * (9.0/5.0) - 459.67) + "ºF ";
-            var tempC = Math.round(tempK - 273.15)  + "ºC ";
-            var cloudCover = data.clouds.all;
-            var humidity = data.main.humidity;
-            var pressure = data.main.pressure;
-            var windSpeed = data.wind.speed;
-            var windDirection = data.wind.deg;
-            var sunrise = data.sys.sunrise * 1000;
-            var sunriseFormat = new Date(sunrise);
-            var sunset = data.sys.sunset * 1000;
-            var sunsetFormat = new Date(sunset);
-            console.log(sunriseFormat);
-            console.log(sunsetFormat);
+            var tempF = data.current_observation.temp_f + "ºF ";
+            var tempC = data.current_observation.temp_c  + "ºC ";
+            var visibility = data.current_observation.visibility_mi;
+            var humidity = data.current_observation.relative_humidity;
+            console.log(humidity);
+            var pressure = data.current_observation.pressure_in;
+            var wind = data.current_observation.wind_string;
+            var sunriseHour = data.sun_phase.sunrise.hour;
+//            var sunriseFormat = new Date(sunrise);
+            var sunsetHour = data.sun_phase.sunset.hour;
+//            var sunsetFormat = new Date(sunset);
+//            console.log(sunriseFormat);
+//            console.log(sunsetFormat);
 
-            var d = new Date();
-            console.log(d);
-            var time = d.getHours();
-            console.log(time);
-
-            var whatTimeIsIt = dayPartition(time, sunriseFormat.getHours(), sunsetFormat.getHours());
-
-            timeWeatherGradient(whatTimeIsIt, main, cloudCover);
+//            var d = new Date();
+//            console.log(d);
+//            var time = d.getHours();
+//            console.log(time);
+//
+//            var whatTimeIsIt = dayPartition(time, sunriseFormat.getHours(), sunsetFormat.getHours());
+//
+//            timeWeatherGradient(whatTimeIsIt, main, cloudCover);
 
 
             // MAIN WEATHER PANEL
@@ -238,8 +239,7 @@ navigator.geolocation.getCurrentPosition(function(location) {
             $temp.text(tempF);
             $humidity.text(humidity);
             $pressure.text(pressure);
-            $windSpeed.text(windSpeed);
-            $windDirection.text(windDirection);
+            $windSpeed.text(wind);
 
             $('#tempToggle').change(function(){
                  if(this.checked) {
