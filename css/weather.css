@@ -23,6 +23,10 @@ html, body {
      height: 100%;
 }
 
+.container {
+    margin: 0 auto;
+}
+
 .icon {
     font-size: 4em;
     cursor: default;
