@@ -68,8 +68,8 @@ function timeWeatherGradient(time, weather, wp) {
     var rgb_c = [];
     var rgb_s = [];
     for(var i = 0; i < rgb.length; i++) {
-        var c = Math.abs(rgb[i] - 65);
-        var c2 = Math.abs(rgb[i] - 130);
+        var c = Math.abs(rgb[i] - 160);
+        var c2 = Math.abs(rgb[i] - 80);
         rgb_c.push(c);
         rgb_s.push(c2);
     }
