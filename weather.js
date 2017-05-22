@@ -106,6 +106,11 @@ function timeWeatherGradient(time, weather, wp) {
     $(".icon").css("color", cc);
     $("body").css("text-shadow", "1px 1px " + ccs);
     $(".icon").css("text-shadow", "1px 1px " + ccs);
+    console.log($(".dayPanel"));
+    $(".dayPanel").each(function() {
+        console.log(this);
+        $(this).css("box-shadow", "1px 1px " + ccs);
+    });
     
     console.log($("body").css("text-shadow"));
 
@@ -125,6 +130,50 @@ function cloudCover(weather) {
     }
 }
 
+
+function forecast(data) {
+    var temps = {};
+    var forecastPanel = $("#forecast");
+    
+    
+    var date = new Date();
+    var today = date.getDay();
+    var dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    console.log("Today is ", today);
+    
+    var forecasts = data.forecast.simpleforecast.forecastday;
+    
+    for(var i = 1; i <= forecasts.length - 1; i++) {
+        var dayPanel = $("#day" + i);
+        var day = today + i;
+        if(day >= 7) day -= 7;
+        
+        var conditions = forecasts[i].conditions;
+        var high_c = forecasts[i].high.celsius + "ºC ";
+        var low_c = forecasts[i].low.celsius + "ºC ";
+        var high_f = forecasts[i].high.fahrenheit + "ºF ";
+        var low_f = forecasts[i].low.fahrenheit + "ºF ";
+        temps["day"+i] = {
+            "high_c": high_c,
+            "low_c": low_c,
+            "high_f": high_f,
+            "low_f": low_f,
+        }
+        
+        var translate = transForecast[conditions];
+        var symbol = daySymbol[translate];
+            
+        $("#day" + i + " .dayTitle").text(dayOfWeek[day]);
+        $("#day" + i + " .condition").text(conditions);
+        $("#day" + i + " .temp").text(high_f + " / " + low_f);
+        $("#day" + i + " .symbol").html("<a href='' class='icon' data-icon=" + symbol  + "></a>");
+        
+        
+        forecastPanel.append(dayPanel);
+    }
+    
+    return temps;
+}
 
 // METEOCONS DATA
 var daySymbol = {
@@ -303,7 +352,37 @@ var translate = {
     "Funnel Cloud": "",
     "Unknown Precipitation": "",
     "Unknown": ""
-}
+};
+
+var transForecast = {
+    "Chance of Flurries": "snow",
+    "Chance of Rain": "rain",
+    "Chance Rain": "rain",
+    "Chance of Freezing Rain": "snow",
+    "Chance of Sleet": "hail",
+    "Chance of Snow": "snow",
+    "Chance of Thunderstorms": "heavy thunderstorm",
+    "Chance of a Thunderstorm": "thunderstorm",
+    "Clear": "clear sky",
+    "Cloudy": "broken clouds",
+    "Flurries": "snow",
+    "Fog": "mist",
+    "Haze": "light mist",
+    "Mostly Cloudy": "scattered clouds",
+    "Mostly Sunny": "few clouds",
+    "Partly Cloudy": "few clouds",
+    "Partly Sunny": "few clouds",
+    "Freezing Rain": "snow",
+    "Rain": "rain",
+    "Sleet": "hail",
+    "Snow": "snow",
+    "Sunny": "clear sky",
+    "Thunderstorms": "heavy thunderstorm",
+    "Thunderstorm": "thunderstorm",
+    "Unknown": "",
+    "Overcast": "overcast",
+    "Scattered Clouds": "scattered clouds"
+};
 
 
 // $ HANDLES
@@ -343,7 +422,7 @@ navigator.geolocation.getCurrentPosition(function(location) {
             var city = data.current_observation.display_location.full;
             console.log(city);
             var description = data.current_observation.weather;
-//            description = "Clear";
+            description = "Clear";
             var main = translate[description];
             console.log(main);
             var icon = "<a href='' class='icon' data-icon=" + daySymbol[main]  + "></a>";
@@ -388,14 +467,27 @@ navigator.geolocation.getCurrentPosition(function(location) {
             var clouds = cloudCover(description);
             
             timeWeatherGradient(whatTimeIsIt, main, clouds);
+            
+            var temps = forecast(data);
+            console.log(temps);
+
 
             $('#tempToggle').change(function(){
-                 if(this.checked) {
-                     $temp.text(tempF);
-                 } else {
-                     $temp.text(tempC);
+                if(this.checked) {
+                    $temp.text(tempF);
+                    for(var i = 1; i < 4; i++) {
+                        $("#day" + i + " .temp").text(temps["day"+i]["high_f"] + " / " + temps["day"+i]["low_f"]);
+                    }
+                } else {
+                    $temp.text(tempC);
+                    for(var i = 1; i < 4; i++) {
+                        $("#day" + i + " .temp").text(temps["day"+i]["high_c"] + " / " + temps["day"+i]["low_c"]);
+                    }
                 }
+                
+                
             });
+            
             
         
         },

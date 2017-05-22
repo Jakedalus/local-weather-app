@@ -48,6 +48,26 @@ i {
 	content: attr(data-icon);
 }
 
+.dayPanel {
+    --box-shadow-color: #000;
+    border: 4px solid white;
+    border-color: inherit;
+    box-shadow: 1px 1px white;
+    margin-top: 10px;
+    padding: 5px;
+    padding-bottom: 20px;
+    width: 250px;
+    margin-left: 0px;
+}
+
+.dayPanel .icon {
+    font-size: 2em;
+    color: inherit;
+    
+}
+
+
+
 #tempToggle, #temp {
     display: inline;
     margin-right: 15px;
